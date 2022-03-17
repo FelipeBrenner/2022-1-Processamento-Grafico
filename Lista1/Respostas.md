@@ -18,8 +18,16 @@ Vertex Buffer Object (VBO) é um buffer que armazena um array de dados (posiçã
 
 a. Apenas com o polígono preenchido
 
+<img src="./Exercicio5/Prints/print5a.png">
+
 b. Apenas com contorno
+
+<img src="./Exercicio5/Prints/print5b.png">
 
 c. Apenas como pontos
 
+<img src="./Exercicio5/Prints/print5c.png">
+
 d. Com as 3 formas de desenho juntas
+
+<img src="./Exercicio5/Prints/print5d.png">

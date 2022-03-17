@@ -67,7 +67,7 @@ int main()
 //#endif
 
 	// Cria��o da janela GLFW
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Ola Triangulo! - Felipe Brenner", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Exercicio 5 - Felipe Brenner", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 
 	// Fazendo o registro da fun��o de callback para a janela GLFW
@@ -122,8 +122,10 @@ int main()
 
 		glBindVertexArray(VAO);
 
-		/*
+		
 		// INICIO EXERCICIO
+
+		/*
 
 		// a. Apenas com o polígono preenchido
 
@@ -132,7 +134,7 @@ int main()
 
 		glUniform4f(colorLoc, 0.6f, 0.6f, 0.6f, 1.0f);
 		glDrawArrays(GL_TRIANGLES, 3, 3);
-
+		
 		// b. Apenas com contorno
 
 		glUniform4f(colorLoc, 0.0f, 0.0f, 0.0f, 1.0f);
