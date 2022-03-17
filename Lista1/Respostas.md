@@ -31,3 +31,15 @@ c. Apenas como pontos
 d. Com as 3 formas de desenho juntas
 
 <img src="./Exercicio5/Prints/print5d.png">
+
+<b> 6. Faça o desenho de um círculo na tela, utilizando a equação paramétrica do círculo para gerar os vértices. Depois disso: </b>
+
+a) Desenhe um octágono
+
+b) Desenhe um pentágono
+
+c) Desenhe um pac-man!
+
+d) Desenhe uma fatia de pizza
+
+e) DESAFIO: desenhe uma “estrela”
