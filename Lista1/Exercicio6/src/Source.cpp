@@ -22,7 +22,10 @@ int setupGeometry();
 
 // Dimensões da janela (pode ser alterado em tempo de execução)
 const GLuint WIDTH = 600, HEIGHT = 600;
+// Número de vértices que terá em volta do ponto central + 1 + o ponto central
 const int nPoints = 1000 + 1 + 1;
+// const int nPoints = 8 + 1 + 1; // Exercicio 6a
+// const int nPoints = 5 + 1 + 1; // Exercicio 6b
 const float pi = 3.14159;
 
 int main()
@@ -84,13 +87,17 @@ int main()
 
 		glBindVertexArray(VAO);
 
-		// Forma triangulos apontando pro vertice de indice 0
 		glUniform4f(colorLoc, 0.4f, 0.4f, 0.4f, 1.0f);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, nPoints);
 
-		// Contorno
-		glUniform4f(colorLoc, 0.0f, 0.0f, 0.0f, 1.0f);
-		glDrawArrays(GL_LINE_LOOP, 1, nPoints-1);
+		// a) Desenhe um octágono
+		// b) Desenhe um pentágono
+		// glDrawArrays(GL_TRIANGLE_FAN, 0, nPoints);
+
+		// c) Desenhe um pac-man!
+		// glDrawArrays(GL_TRIANGLE_FAN, 0, nPoints * 7 / 8);
+
+		// d) Desenhe uma fatia de pizza
+		glDrawArrays(GL_TRIANGLE_FAN, 0, nPoints / 8);
 
 		glBindVertexArray(0);
 
@@ -127,7 +134,7 @@ int setupGeometry()
 	float angle = 0.0;
 	float deltaAngle = 2 * pi / (float)(nPoints - 2);
 	float radius = 0.5;
-
+	
 	// Adicionar o centro
 	vertices[0] = 0.0; // x
 	vertices[1] = 0.0; // y
