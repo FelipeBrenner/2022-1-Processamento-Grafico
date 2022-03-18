@@ -6,7 +6,17 @@ OpenGL Shading Language (GLSL) é uma linguagem de sombreamento de alto nível c
 
 <b>2. O que são primitivas gráficas? Como fazemos o armazenamento dos vértices na OpenGL?</b>
 
-As primitivas gráficas são os elementos mais simples que podem ser criados, que em CG são os pontos, linhas e poligonos.
+As primitivas gráficas são os elementos mais simples que podem ser criados.
+
+<img src="./prints/primitivas.png">
+
+- GL_POINTS: pontos
+- GL_LINES: linha a cada 2 pontos do array
+- GL_LINE_STRIP: linha entre todos os pontos do array do primeiro ao ultimo
+- GL_LINE_LOOP: linha entre todos os pontos do array
+- GL_TRIANGULOS: triangulo a cada 3 pontos do array
+- GL_TRIANGLE_STRIP: triangulos grudados
+- GL_TRIANGLE_FAN: triangulo a cada 2 pontos do array sendo que o terceiro ponto é sempre o primeiro do array
 
 <b>3. Explique o que é VBO, VAO e EBO, e como se relacionam (se achar mais fácil, pode fazer um gráfico representando a relação entre eles).</b>
 
@@ -18,19 +28,19 @@ Vertex Buffer Object (VBO) é um buffer que armazena um array de dados (posiçã
 
 a. Apenas com o polígono preenchido
 
-<img src="./Exercicio5/Prints/print5a.png">
+<img src="./Exercicio5/prints/print5a.png">
 
 b. Apenas com contorno
 
-<img src="./Exercicio5/Prints/print5b.png">
+<img src="./Exercicio5/prints/print5b.png">
 
 c. Apenas como pontos
 
-<img src="./Exercicio5/Prints/print5c.png">
+<img src="./Exercicio5/prints/print5c.png">
 
 d. Com as 3 formas de desenho juntas
 
-<img src="./Exercicio5/Prints/print5d.png">
+<img src="./Exercicio5/prints/print5d.png">
 
 <b> 6. Faça o desenho de um círculo na tela, utilizando a equação paramétrica do círculo para gerar os vértices. Depois disso: </b>
 
