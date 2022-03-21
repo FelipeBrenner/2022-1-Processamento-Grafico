@@ -95,10 +95,7 @@ int main()
 		glDrawArrays(GL_TRIANGLES, 24, 3);
 
 		glUniform4f(colorLoc, 0.6f, 0.6f, 0.6f, 1.0f);
-		glDrawArrays(GL_LINES, 27, 2);
-
-		glUniform4f(colorLoc, 0.6f, 0.6f, 0.6f, 1.0f);
-		glDrawArrays(GL_LINES, 28, 2);
+		glDrawArrays(GL_LINE_STRIP, 27, 3);
 
 		glBindVertexArray(0);
 
