@@ -23,9 +23,10 @@ int setupGeometry();
 // Dimensões da janela (pode ser alterado em tempo de execução)
 const GLuint WIDTH = 600, HEIGHT = 600;
 // Número de vértices que terá em volta do ponto central + 1 + o ponto central
-const int nPoints = 1000 + 1 + 1;
+// const int nPoints = 1000 + 1 + 1;
 // const int nPoints = 8 + 1 + 1; // Exercicio 6a
 // const int nPoints = 5 + 1 + 1; // Exercicio 6b
+const int nPoints = 10 + 1 + 1; // Exercicio 6e
 const float pi = 3.14159;
 
 int main()
@@ -91,13 +92,14 @@ int main()
 
 		// a) Desenhe um octágono
 		// b) Desenhe um pentágono
-		// glDrawArrays(GL_TRIANGLE_FAN, 0, nPoints);
+		// e) DESAFIO: desenhe uma “estrela”
+		glDrawArrays(GL_TRIANGLE_FAN, 0, nPoints);
 
 		// c) Desenhe um pac-man!
 		// glDrawArrays(GL_TRIANGLE_FAN, 0, nPoints * 7 / 8);
 
 		// d) Desenhe uma fatia de pizza
-		glDrawArrays(GL_TRIANGLE_FAN, 0, nPoints / 8);
+		// glDrawArrays(GL_TRIANGLE_FAN, 0, nPoints / 8);
 
 		glBindVertexArray(0);
 
@@ -142,6 +144,12 @@ int setupGeometry()
 
 	for (int i = 3; i < nPoints * 3; i += 3)
 	{
+		// e) DESAFIO: desenhe uma “estrela”
+		if(i % 2 == 0)
+			radius = 0.2;
+		else
+			radius = 0.5;
+
 		vertices[i] = radius * cos(angle);
 		vertices[i+1] = radius * sin(angle);
 		vertices[i+2] = 0.0;
