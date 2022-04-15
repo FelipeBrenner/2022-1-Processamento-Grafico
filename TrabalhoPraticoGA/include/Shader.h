@@ -1,6 +1,3 @@
-// Nossa classezinha que l� o arquivo de shader e o compila na OpenGL
-// Exemplo retirado de https://learnopengl.com/#!Getting-started/Shaders
-
 #pragma once
 
 #include <string>
@@ -8,24 +5,19 @@
 #include <sstream>
 #include <iostream>
 
-//GLAD
 #include <glad/glad.h>
 
-// GLFW
 #include <GLFW/glfw3.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-
-using namespace std;
 
 class Shader
 {
 public:
 	GLuint ID;
 	// Constructor generates the shader on the fly
-	Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
-	{
+	Shader(const GLchar* vertexPath, const GLchar* fragmentPath) {
 		// 1. Retrieve the vertex/fragment source code from filePath
 		std::string vertexCode;
 		std::string fragmentCode;
