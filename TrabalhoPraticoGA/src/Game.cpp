@@ -1,6 +1,7 @@
+#include <time.h>
 #include "Game.h"
 
-static const float WIDTH = 800.0f, HEIGHT = 600.0f, widthChar = 70.0f;
+static const float WIDTH = 800.0f, HEIGHT = 600.0f, widthChar = 70.0f, widthEnemie = 70.0f;
 static bool leftPressed, rightPressed, upPressed, downPressed;
 
 Game::Game() {}
@@ -46,31 +47,40 @@ void Game::key_callback(GLFWwindow* window, int key, int scancode, int action, i
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
 
-	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		rightPressed = true;
-	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 		leftPressed = true;
-	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		upPressed = true;
-	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 		downPressed = true;
-	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_RELEASE)
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_RELEASE)
 		rightPressed = false;
-	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_RELEASE)
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_RELEASE)
 		leftPressed = false;
-	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_RELEASE)
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_RELEASE)
 		upPressed = false;
-	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_RELEASE)
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_RELEASE)
 		downPressed = false;
 }
 
 void Game::run() {
 	createCharacter();
+	clock_t tInicio = clock();
+	int idEnemie = 0;
 
   while(!glfwWindowShouldClose(window)) {
     glfwPollEvents();
 
-		update();
+		if((clock() - tInicio) / 1000000 > 5 && idEnemie < 2) {
+			idEnemie++;
+			tInicio = clock();
+			createEnemie(idEnemie);
+		}
+
+		updateCharacter();
+		updateEnemies();
     render();
 
     glfwSwapBuffers(window);
@@ -89,7 +99,27 @@ void Game::createCharacter() {
 	sprite->setShader(shader);
 	objects.push_back(sprite);
 
-	character = new Character(sprite, WIDTH/2, HEIGHT/2);
+	character = new Character(sprite, WIDTH/2, HEIGHT/2, 0.08f);
+}
+
+void Game::createEnemie(int id) {
+	Sprite* sprite;
+	int texID;
+
+	float xInitial = widthChar/2;
+	float yInitial = rand() % (int)HEIGHT - widthChar/2;
+
+	sprite = new Sprite;
+	texID = loadTexture("textures/" + std::to_string(id) + ".png");
+	sprite->setTexture(texID);
+	sprite->setTranslation(glm::vec3(xInitial, yInitial, 0));
+	sprite->setScale(glm::vec3(widthEnemie, widthEnemie, 1.0));
+	sprite->setShader(shader);
+	objects.push_back(sprite);
+	float speed = id * 0.01f;
+
+	Enemie* enemie = new Enemie(sprite, xInitial, yInitial, speed, speed);
+	enemies.push_back(enemie);
 }
 
 int Game::loadTexture(string path)
@@ -135,11 +165,9 @@ int Game::loadTexture(string path)
 	return texID;
 }
 
-void Game::update() {
-  int texID;
-
+void Game::updateCharacter() {
   if(leftPressed)
-    if(character->x > 0 + widthChar/2)
+    if(character->x > widthChar/2)
 			character->moveLeft();
 
 	if(rightPressed)
@@ -151,17 +179,28 @@ void Game::update() {
 			character->moveUp();
 
 	if(downPressed)
-    if(character->y > 0 + widthChar/2)
+    if(character->y > widthChar/2)
 			character->moveDown();
 };
+
+void Game::updateEnemies() {
+	for (int i = 0; i < enemies.size(); i++) {
+		if(enemies[i]->x > WIDTH - widthEnemie/2 || enemies[i]->x < widthEnemie/2)
+			enemies[i]->setSpeedX(-enemies[i]->speedX);
+		if(enemies[i]->y > HEIGHT - widthEnemie/2 || enemies[i]->y < widthEnemie/2)
+			enemies[i]->setSpeedY(-enemies[i]->speedY);
+
+		enemies[i]->moveX();
+		enemies[i]->moveY();
+	}
+}
 
 void Game::render() {
   glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
   setupCamera2D();
 	
-  for (int i = 0; i < objects.size(); i++)
-	{
+  for (int i = 0; i < objects.size(); i++) {
 		objects[i]->update();
 		objects[i]->draw();
 	}

@@ -1,39 +1,38 @@
 #include <math.h>
 
-#include "Character.h"
+#include "Enemie.h"
 
-Character::Character(Sprite* i_sprite, float i_x, float i_y, float i_speed) {
+Enemie::Enemie(Sprite* i_sprite, float i_x, float i_y, float i_speedX, float i_speedY) {
   this->sprite = i_sprite;
   this->x = i_x;
   this->y = i_y;
-	this->speed = i_speed;
+	this->speedX = i_speedX;
+	this->speedY = i_speedY;
 }
 
-void Character::setSprite(Sprite* i_sprite) {
+void Enemie::setSprite(Sprite* i_sprite) {
   this->sprite = i_sprite;
 }
 
-void Character::moveRight() {
-	this->x += speed;
+void Enemie::setSpeedX(float i_speed) {
+	this->speedX = i_speed;
+}
+
+void Enemie::setSpeedY(float i_speed) {
+	this->speedY = i_speed;
+}
+
+void Enemie::moveX() {
+	this->x += speedX;
   this->sprite->setTranslation(glm::vec3(this->x, this->y, 0.0));
 }
 
-void Character::moveLeft() {
-	this->x -= speed;
+void Enemie::moveY() {
+	this->y += speedY;
   this->sprite->setTranslation(glm::vec3(this->x, this->y, 0.0));
 }
 
-void Character::moveUp() {
-	this->y += speed;
-  this->sprite->setTranslation(glm::vec3(this->x, this->y, 0.0));
-}
-
-void Character::moveDown() {
-	this->y -= speed;
-  this->sprite->setTranslation(glm::vec3(this->x, this->y, 0.0));
-}
-
-int Character::loadTexture(string path)
+int Enemie::loadTexture(string path)
 {
 	GLuint texID;
 

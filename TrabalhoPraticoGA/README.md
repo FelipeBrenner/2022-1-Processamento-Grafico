@@ -1,0 +1,6 @@
+## ⚙ Execução
+
+```bash
+make
+./app
+```

@@ -3,6 +3,7 @@
 #include "Shader.h"
 #include "Sprite.h"
 #include "Character.h"
+#include "Enemie.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -21,7 +22,8 @@ class Game {
     void start();
     void run();
 
-    void update();
+    void updateCharacter();
+    void updateEnemies();
 	  void render();
 
     int loadTexture(string path);
@@ -32,6 +34,7 @@ class Game {
     void setupCamera2D();
     void addShader(string vFilename, string fFilename);
     void createCharacter();
+    void createEnemie(int id);
 
     GLFWwindow* window;
     Shader* shader;
@@ -39,4 +42,5 @@ class Game {
 
     vector <Sprite*> objects;
     Character* character;
+    vector <Enemie*> enemies;
 };
