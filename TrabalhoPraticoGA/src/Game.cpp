@@ -1,7 +1,11 @@
-#include "../include/Game.h"
+#include "Game.h"
 
-static const float WIDTH = 800.0f, HEIGHT = 600.0f;
+static const float WIDTH = 800.0f, HEIGHT = 600.0f, widthChar = 70.0f;
 static bool leftPressed, rightPressed, upPressed, downPressed;
+
+Game::Game() {}
+
+Game::~Game() {}
 
 void Game::start() {
   initializeGraphics();
@@ -25,7 +29,7 @@ void Game::initializeGraphics()
 	cout << "Renderer: " << renderer << endl;
 	cout << "OpenGL version supported " << version << endl;
 
-  addShader("../shaders/sprite.vs","../shaders/sprite.fs");
+  addShader("shaders/sprite.vs","shaders/sprite.fs");
 
   int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
@@ -37,11 +41,55 @@ void Game::addShader(string vFilename, string fFilename)
 	shader = new Shader(vFilename.c_str(), fFilename.c_str());
 }
 
-void Game::setupCamera2D()
+void Game::key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
-	projection = glm::ortho(0.0f, WIDTH, 0.0f, HEIGHT, -1.0f, 1.0f);
-	GLint projLoc = glGetUniformLocation(shader->ID, "projection");
-	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, GL_TRUE);
+
+	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+		rightPressed = true;
+	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+		leftPressed = true;
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+		upPressed = true;
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+		downPressed = true;
+	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_RELEASE)
+		rightPressed = false;
+	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_RELEASE)
+		leftPressed = false;
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_RELEASE)
+		upPressed = false;
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_RELEASE)
+		downPressed = false;
+}
+
+void Game::run() {
+	createCharacter();
+
+  while(!glfwWindowShouldClose(window)) {
+    glfwPollEvents();
+
+		update();
+    render();
+
+    glfwSwapBuffers(window);
+  }
+}
+
+void Game::createCharacter() {
+	Sprite* sprite;
+	int texID;
+
+	sprite = new Sprite;
+	texID = loadTexture("textures/pa.png");
+	sprite->setTexture(texID);
+	sprite->setTranslation(glm::vec3(WIDTH/2, HEIGHT/2, 0));
+	sprite->setScale(glm::vec3(widthChar, widthChar, 1.0));
+	sprite->setShader(shader);
+	objects.push_back(sprite);
+
+	character = new Character(sprite, WIDTH/2, HEIGHT/2);
 }
 
 int Game::loadTexture(string path)
@@ -87,61 +135,23 @@ int Game::loadTexture(string path)
 	return texID;
 }
 
-void Game::key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
-{
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
-
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		rightPressed = true;
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		leftPressed = true;
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		upPressed = true;
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		downPressed = true;
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_RELEASE)
-		rightPressed = false;
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_RELEASE)
-		leftPressed = false;
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_RELEASE)
-		upPressed = false;
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_RELEASE)
-		downPressed = false;
-}
-
-void Game::createCharacter() {
-	Sprite* sprite;
-	int texID;
-
-	sprite = new Sprite;
-	texID = loadTexture("../textures/pa.png");
-	sprite->setTexture(texID);
-	sprite->setTranslation(glm::vec3(WIDTH/2, HEIGHT/2, 0));
-	sprite->setScale(glm::vec3(70.0, 70.0, 1.0));
-	sprite->setShader(shader);
-	objects.push_back(sprite);
-
-	character = new Character(sprite, WIDTH/2, HEIGHT/2);
-}
-
 void Game::update() {
   int texID;
 
   if(leftPressed)
-    if(character->x > 0)
+    if(character->x > 0 + widthChar/2)
 			character->moveLeft();
 
 	if(rightPressed)
-    if(character->x < WIDTH)
+    if(character->x < WIDTH - widthChar/2)
 			character->moveRight();
 
 	if(upPressed)
-    if(character->y < HEIGHT)
+    if(character->y < HEIGHT - widthChar/2)
 			character->moveUp();
 
 	if(downPressed)
-    if(character->y > 0)
+    if(character->y > 0 + widthChar/2)
 			character->moveDown();
 };
 
@@ -149,7 +159,7 @@ void Game::render() {
   glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
   setupCamera2D();
-
+	
   for (int i = 0; i < objects.size(); i++)
 	{
 		objects[i]->update();
@@ -157,15 +167,9 @@ void Game::render() {
 	}
 }
 
-void Game::run() {
-	createCharacter();
-
-  while(!glfwWindowShouldClose(window)) {
-    glfwPollEvents();
-
-		update();
-    render();
-
-    glfwSwapBuffers(window);
-  }
+void Game::setupCamera2D()
+{
+	projection = glm::ortho(0.0f, WIDTH, 0.0f, HEIGHT, -1.0f, 1.0f);
+	GLint projLoc = glGetUniformLocation(shader->ID, "projection");
+	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 }

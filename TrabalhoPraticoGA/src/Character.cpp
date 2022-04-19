@@ -1,6 +1,6 @@
 #include <math.h>
 
-#include "../include/Character.h"
+#include "Character.h"
 
 Character::Character(Sprite* i_sprite, float i_x, float i_y) {
   this->sprite = i_sprite;

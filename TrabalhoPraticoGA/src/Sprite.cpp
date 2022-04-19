@@ -1,4 +1,4 @@
-#include "../include/Sprite.h"
+#include "Sprite.h"
 
 Sprite::Sprite()
 {
@@ -6,7 +6,6 @@ Sprite::Sprite()
 }
 
 void Sprite::setup() {
-  GLuint VAO;
 	GLuint VBO, EBO;
 
 	float vertices[] = {
