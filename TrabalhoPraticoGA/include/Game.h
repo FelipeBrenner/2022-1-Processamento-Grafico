@@ -22,6 +22,8 @@ class Game {
     void start();
     void run();
 
+    void createScene();
+    void createBackground();
     void updateCharacter();
     void updateEnemies();
     void checkConflit();
@@ -31,6 +33,7 @@ class Game {
 
   private:
     static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+    static void resize(GLFWwindow* window, int width, int height);
     void initializeGraphics();
     void setupCamera2D();
     void addShader(string vFilename, string fFilename);
@@ -43,5 +46,6 @@ class Game {
 
     vector <Sprite*> objects;
     Character* character;
+    Character* background;
     vector <Enemie*> enemies;
 };

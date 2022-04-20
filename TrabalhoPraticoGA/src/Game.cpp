@@ -1,7 +1,10 @@
 #include <time.h>
 #include "Game.h"
 
-static const float WIDTH = 1440.0f, HEIGHT = 900.0f, widthChar = 70.0f, widthEnemie = 70.0f;
+static const float widthDefault = 1440.0f , heightDefault = 900.0f;
+static float width = widthDefault, height = heightDefault;
+static const float widthChar = 70.0f, widthEnemie = 70.0f;
+static bool resized;
 static bool leftPressed, rightPressed, upPressed, downPressed;
 static bool gameOver = false;
 
@@ -17,9 +20,10 @@ void Game::initializeGraphics()
 {
 	glfwInit();
 
-	window = glfwCreateWindow(WIDTH, HEIGHT, "Trabalho Prático GA - Felipe Brenner", nullptr, nullptr);
+	window = glfwCreateWindow(width, height, "Trabalho Prático GA - Felipe Brenner", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 	glfwSetKeyCallback(window, key_callback);
+	glfwSetWindowSizeCallback(window, resize);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
@@ -33,9 +37,9 @@ void Game::initializeGraphics()
 
   addShader("shaders/sprite.vs","shaders/sprite.fs");
 
-  int width, height;
-	glfwGetFramebufferSize(window, &width, &height);
-	glViewport(0, 0, width, height);
+	createScene();
+
+	resized = true;
 }
 
 void Game::addShader(string vFilename, string fFilename)
@@ -68,11 +72,19 @@ void Game::key_callback(GLFWwindow* window, int key, int scancode, int action, i
 	}
 }
 
+void Game::resize(GLFWwindow *window, int w, int h)
+{
+	width = w;
+	height = h;
+	resized = true;
+
+	glViewport(0, 0, width, height);
+}
+
 void Game::run() {
 	clock_t tInicio = clock();
 	int idEnemie = 1;
 
-	createCharacter();
 	createEnemie(idEnemie);
 
   while(!glfwWindowShouldClose(window)) {
@@ -88,11 +100,31 @@ void Game::run() {
 			updateCharacter();
 			updateEnemies();
 			checkConflit();
-			render();
 		}
+		
+		render();
 
     glfwSwapBuffers(window);
   }
+}
+
+void Game::createScene() {
+	createBackground();
+	createCharacter();
+}
+
+void Game::createBackground()
+{
+	Sprite *sprite = new Sprite;
+	unsigned int texID = loadTexture("textures/background.png");
+
+	sprite->setTexture(texID);
+	sprite->setTranslation(glm::vec3(width/2, height/2, 0.0));
+	sprite->setScale(glm::vec3(width*1.25, height*1.25, 1.0f));
+	sprite->setShader(shader);
+	objects.push_back(sprite);
+
+	background = new Character(sprite, width/2, height/2, 0.02f);
 }
 
 void Game::createCharacter() {
@@ -102,12 +134,12 @@ void Game::createCharacter() {
 	sprite = new Sprite;
 	texID = loadTexture("textures/pa.png");
 	sprite->setTexture(texID);
-	sprite->setTranslation(glm::vec3(WIDTH/2, HEIGHT/2, 0));
+	sprite->setTranslation(glm::vec3(width/2, height/2, 0));
 	sprite->setScale(glm::vec3(widthChar, widthChar, 1.0));
 	sprite->setShader(shader);
 	objects.push_back(sprite);
 
-	character = new Character(sprite, WIDTH/2, HEIGHT/2, 0.08f);
+	character = new Character(sprite, width/2, height/2, 0.08f);
 }
 
 void Game::createEnemie(int id) {
@@ -115,7 +147,7 @@ void Game::createEnemie(int id) {
 	int texID;
 
 	float xInitial = widthChar/2;
-	float yInitial = rand() % (int)HEIGHT - widthChar/2;
+	float yInitial = rand() % (int)height - widthChar/2;
 
 	sprite = new Sprite;
 	texID = loadTexture("textures/" + std::to_string(id) + ".png");
@@ -128,6 +160,73 @@ void Game::createEnemie(int id) {
 
 	Enemie* enemie = new Enemie(sprite, xInitial, yInitial, speed, speed);
 	enemies.push_back(enemie);
+}
+
+void Game::updateCharacter() {
+  if(leftPressed)
+    if(character->x > widthChar/2) {
+			character->moveLeft();
+			background->moveRight();
+		}
+
+	if(rightPressed)
+    if(character->x < widthDefault - widthChar/2) {
+			character->moveRight();
+			background->moveLeft();
+		}
+
+	if(upPressed)
+    if(character->y < heightDefault - widthChar/2) {
+			character->moveUp();
+			background->moveDown();
+		}
+
+	if(downPressed)
+    if(character->y > widthChar/2) {
+			character->moveDown();
+			background->moveUp();
+		}
+};
+
+void Game::updateEnemies() {
+	for (int i = 0; i < enemies.size(); i++) {
+		if(enemies[i]->x > widthDefault - widthEnemie/2 || enemies[i]->x < widthEnemie/2)
+			enemies[i]->setSpeedX(-enemies[i]->speedX);
+			
+		if(enemies[i]->y > heightDefault - widthEnemie/2 || enemies[i]->y < widthEnemie/2)
+			enemies[i]->setSpeedY(-enemies[i]->speedY);
+
+		enemies[i]->moveX();
+		enemies[i]->moveY();
+	}
+}
+
+void Game::checkConflit() {
+	for (int i = 0; i < enemies.size(); i++) {
+		if(
+			character->x + widthChar/2 > enemies[i]->x - widthEnemie/2 && 
+			character->x - widthChar/2 < enemies[i]->x + widthEnemie/2 && 
+			character->y + widthChar/2 > enemies[i]->y - widthEnemie/2 && 
+			character->y - widthChar/2 < enemies[i]->y + widthEnemie/2
+		) {
+			gameOver = true;
+		}
+	}
+}
+
+void Game::render() {
+  glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  
+	if (resized) {
+		setupCamera2D();
+		resized = false;
+	}
+	
+  for (int i = 0; i < objects.size(); i++) {
+		objects[i]->update();
+		objects[i]->draw();
+	}
 }
 
 int Game::loadTexture(string path)
@@ -173,64 +272,9 @@ int Game::loadTexture(string path)
 	return texID;
 }
 
-void Game::updateCharacter() {
-  if(leftPressed)
-    if(character->x > widthChar/2)
-			character->moveLeft();
-
-	if(rightPressed)
-    if(character->x < WIDTH - widthChar/2)
-			character->moveRight();
-
-	if(upPressed)
-    if(character->y < HEIGHT - widthChar/2)
-			character->moveUp();
-
-	if(downPressed)
-    if(character->y > widthChar/2)
-			character->moveDown();
-};
-
-void Game::updateEnemies() {
-	for (int i = 0; i < enemies.size(); i++) {
-		if(enemies[i]->x > WIDTH - widthEnemie/2 || enemies[i]->x < widthEnemie/2)
-			enemies[i]->setSpeedX(-enemies[i]->speedX);
-			
-		if(enemies[i]->y > HEIGHT - widthEnemie/2 || enemies[i]->y < widthEnemie/2)
-			enemies[i]->setSpeedY(-enemies[i]->speedY);
-
-		enemies[i]->moveX();
-		enemies[i]->moveY();
-	}
-}
-
-void Game::checkConflit() {
-	for (int i = 0; i < enemies.size(); i++) {
-		if(
-			character->x + widthChar/2 > enemies[i]->x - widthEnemie/2 && 
-			character->x - widthChar/2 < enemies[i]->x + widthEnemie/2 && 
-			character->y + widthChar/2 > enemies[i]->y - widthEnemie/2 && 
-			character->y - widthChar/2 < enemies[i]->y + widthEnemie/2
-		) {
-			gameOver = true;
-		}
-	}
-}
-
-void Game::render() {
-  glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-  setupCamera2D();
-	
-  for (int i = 0; i < objects.size(); i++) {
-		objects[i]->update();
-		objects[i]->draw();
-	}
-}
-
 void Game::setupCamera2D()
 {
-	projection = glm::ortho(0.0f, WIDTH, 0.0f, HEIGHT, -1.0f, 1.0f);
+	projection = glm::ortho(0.0f, widthDefault, 0.0f, heightDefault, -1.0f, 1.0f);
 	GLint projLoc = glGetUniformLocation(shader->ID, "projection");
 	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 }
