@@ -28,6 +28,7 @@ class Game {
     void updateEnemies();
     void checkConflit();
 	  void render();
+    void reset();
 
     int loadTexture(string path);
 

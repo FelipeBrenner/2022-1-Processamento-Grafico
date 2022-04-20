@@ -6,7 +6,7 @@ static float width = widthDefault, height = heightDefault;
 static const float widthChar = 70.0f, widthEnemie = 70.0f;
 static bool resized;
 static bool leftPressed, rightPressed, upPressed, downPressed;
-static bool gameOver = false;
+static bool started = false, gameOver = false, readyToStart = true;
 
 Game::Game() {}
 
@@ -37,8 +37,6 @@ void Game::initializeGraphics()
 
   addShader("shaders/sprite.vs","shaders/sprite.fs");
 
-	createScene();
-
 	resized = true;
 }
 
@@ -52,23 +50,29 @@ void Game::key_callback(GLFWwindow* window, int key, int scancode, int action, i
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
 
-	if(!gameOver) {
-		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-			rightPressed = true;
-		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-			leftPressed = true;
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-			upPressed = true;
-		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-			downPressed = true;
-		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_RELEASE)
-			rightPressed = false;
-		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_RELEASE)
-			leftPressed = false;
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_RELEASE)
-			upPressed = false;
-		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_RELEASE)
-			downPressed = false;
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		rightPressed = true;
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		leftPressed = true;
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		upPressed = true;
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		downPressed = true;
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_RELEASE)
+		rightPressed = false;
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_RELEASE)
+		leftPressed = false;
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_RELEASE)
+		upPressed = false;
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_RELEASE)
+		downPressed = false;
+
+	if(!started && !leftPressed && !rightPressed && !upPressed && !downPressed)
+		readyToStart = true;
+
+	if(readyToStart && (leftPressed || rightPressed || upPressed || downPressed)) {
+		started = true;
+		readyToStart = false;
 	}
 }
 
@@ -82,16 +86,19 @@ void Game::resize(GLFWwindow *window, int w, int h)
 }
 
 void Game::run() {
-	clock_t tInicio = clock();
-	int idEnemie = 1;
+	clock_t tInicio;
+	int idEnemie = 0;
 
-	createEnemie(idEnemie);
+	createScene();
 
   while(!glfwWindowShouldClose(window)) {
     glfwPollEvents();
 
-		if(!gameOver) {
-			if((clock() - tInicio) / 1000000 > 5 && idEnemie < 10) {
+		if(started) {
+			if(gameOver)
+				break;
+
+			if((clock() - tInicio) / 1000000 > 5 && idEnemie < 10 || idEnemie == 0) {
 				idEnemie++;
 				tInicio = clock();
 				createEnemie(idEnemie);
@@ -101,11 +108,14 @@ void Game::run() {
 			updateEnemies();
 			checkConflit();
 		}
-		
+
 		render();
 
     glfwSwapBuffers(window);
   }
+
+	if(started && gameOver)
+		reset();
 }
 
 void Game::createScene() {
@@ -210,6 +220,8 @@ void Game::checkConflit() {
 			character->y - widthChar/2 < enemies[i]->y + widthEnemie/2
 		) {
 			gameOver = true;
+			started = false;
+			readyToStart = !leftPressed && !rightPressed && !upPressed && !downPressed;
 		}
 	}
 }
@@ -227,6 +239,13 @@ void Game::render() {
 		objects[i]->update();
 		objects[i]->draw();
 	}
+}
+
+void Game::reset() {
+	gameOver = false;
+	objects.clear();
+	enemies.clear();
+	run();
 }
 
 int Game::loadTexture(string path)
