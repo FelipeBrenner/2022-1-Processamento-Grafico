@@ -24,6 +24,7 @@ class Game {
 
     void updateCharacter();
     void updateEnemies();
+    void checkConflit();
 	  void render();
 
     int loadTexture(string path);

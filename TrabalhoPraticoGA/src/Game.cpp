@@ -1,8 +1,9 @@
 #include <time.h>
 #include "Game.h"
 
-static const float WIDTH = 800.0f, HEIGHT = 600.0f, widthChar = 70.0f, widthEnemie = 70.0f;
+static const float WIDTH = 1440.0f, HEIGHT = 900.0f, widthChar = 70.0f, widthEnemie = 70.0f;
 static bool leftPressed, rightPressed, upPressed, downPressed;
+static bool gameOver = false;
 
 Game::Game() {}
 
@@ -68,20 +69,26 @@ void Game::key_callback(GLFWwindow* window, int key, int scancode, int action, i
 void Game::run() {
 	createCharacter();
 	clock_t tInicio = clock();
-	int idEnemie = 0;
+	int idEnemie = 1;
+
+	createEnemie(idEnemie);
 
   while(!glfwWindowShouldClose(window)) {
     glfwPollEvents();
 
-		if((clock() - tInicio) / 1000000 > 5 && idEnemie < 2) {
-			idEnemie++;
-			tInicio = clock();
-			createEnemie(idEnemie);
-		}
+		if(!gameOver) {
 
-		updateCharacter();
-		updateEnemies();
-    render();
+			if((clock() - tInicio) / 1000000 > 5 && idEnemie < 10) {
+				idEnemie++;
+				tInicio = clock();
+				createEnemie(idEnemie);
+			}
+
+			updateCharacter();
+			updateEnemies();
+			checkConflit();
+			render();
+		}
 
     glfwSwapBuffers(window);
   }
@@ -116,7 +123,7 @@ void Game::createEnemie(int id) {
 	sprite->setScale(glm::vec3(widthEnemie, widthEnemie, 1.0));
 	sprite->setShader(shader);
 	objects.push_back(sprite);
-	float speed = id * 0.01f;
+	float speed = 0.03 + id * 0.005f;
 
 	Enemie* enemie = new Enemie(sprite, xInitial, yInitial, speed, speed);
 	enemies.push_back(enemie);
@@ -192,6 +199,19 @@ void Game::updateEnemies() {
 
 		enemies[i]->moveX();
 		enemies[i]->moveY();
+	}
+}
+
+void Game::checkConflit() {
+	for (int i = 0; i < enemies.size(); i++) {
+		if(
+			character->x + widthChar/2 > enemies[i]->x - widthEnemie/2 && 
+			character->x - widthChar/2 < enemies[i]->x + widthEnemie/2 && 
+			character->y + widthChar/2 > enemies[i]->y - widthEnemie/2 && 
+			character->y - widthChar/2 < enemies[i]->y + widthEnemie/2
+		) {
+			gameOver = true;
+		}
 	}
 }
 
