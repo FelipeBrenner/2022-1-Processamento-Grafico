@@ -48,36 +48,37 @@ void Game::key_callback(GLFWwindow* window, int key, int scancode, int action, i
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
 
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		rightPressed = true;
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		leftPressed = true;
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		upPressed = true;
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		downPressed = true;
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_RELEASE)
-		rightPressed = false;
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_RELEASE)
-		leftPressed = false;
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_RELEASE)
-		upPressed = false;
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_RELEASE)
-		downPressed = false;
+	if(!gameOver) {
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+			rightPressed = true;
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+			leftPressed = true;
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+			upPressed = true;
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+			downPressed = true;
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_RELEASE)
+			rightPressed = false;
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_RELEASE)
+			leftPressed = false;
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_RELEASE)
+			upPressed = false;
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_RELEASE)
+			downPressed = false;
+	}
 }
 
 void Game::run() {
-	createCharacter();
 	clock_t tInicio = clock();
 	int idEnemie = 1;
 
+	createCharacter();
 	createEnemie(idEnemie);
 
   while(!glfwWindowShouldClose(window)) {
     glfwPollEvents();
 
 		if(!gameOver) {
-
 			if((clock() - tInicio) / 1000000 > 5 && idEnemie < 10) {
 				idEnemie++;
 				tInicio = clock();
@@ -194,6 +195,7 @@ void Game::updateEnemies() {
 	for (int i = 0; i < enemies.size(); i++) {
 		if(enemies[i]->x > WIDTH - widthEnemie/2 || enemies[i]->x < widthEnemie/2)
 			enemies[i]->setSpeedX(-enemies[i]->speedX);
+			
 		if(enemies[i]->y > HEIGHT - widthEnemie/2 || enemies[i]->y < widthEnemie/2)
 			enemies[i]->setSpeedY(-enemies[i]->speedY);
 
