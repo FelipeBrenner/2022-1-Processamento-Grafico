@@ -4,6 +4,7 @@
 #include "Sprite.h"
 #include "Character.h"
 #include "Enemie.h"
+#include "AudioManager.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -11,6 +12,7 @@
 
 #include <vector>
 #include <math.h>
+#include <time.h>
 
 using namespace std;
 

@@ -1,12 +1,10 @@
-#include <time.h>
 #include "Game.h"
 
-static const float widthDefault = 1440.0f , heightDefault = 900.0f;
+static const float widthDefault = 1440.0f , heightDefault = 900.0f, widthChar = 70.0f, widthEnemie = 70.0f;
 static float width = widthDefault, height = heightDefault;
-static const float widthChar = 70.0f, widthEnemie = 70.0f;
-static bool resized;
-static bool leftPressed, rightPressed, upPressed, downPressed;
-static bool started = false, gameOver = false, readyToStart = true;
+static bool resized, leftPressed, rightPressed, upPressed, downPressed, started, gameOver, readyToStart = true;
+
+AudioManager* audio = new AudioManager;
 
 Game::Game() {}
 
@@ -14,6 +12,7 @@ Game::~Game() {}
 
 void Game::start() {
   initializeGraphics();
+	audio->init();
 }
 
 void Game::initializeGraphics()
@@ -98,7 +97,7 @@ void Game::run() {
 			if(gameOver)
 				break;
 
-			if((clock() - tInicio) / 1000000 > 5 && idEnemie < 10 || idEnemie == 0) {
+			if((clock() - tInicio) / 1000000 > 3 && idEnemie < 10 || idEnemie == 0) {
 				idEnemie++;
 				tInicio = clock();
 				createEnemie(idEnemie);
@@ -168,8 +167,11 @@ void Game::createEnemie(int id) {
 	objects.push_back(sprite);
 	float speed = 0.03 + id * 0.005f;
 
-	Enemie* enemie = new Enemie(sprite, xInitial, yInitial, speed, speed);
+	Enemie* enemie = new Enemie(sprite, xInitial, yInitial, speed, speed, id);
 	enemies.push_back(enemie);
+
+	const char* audioPath = ("audios/" + std::to_string(id) + ".mp3").c_str();
+	audio->play_audio(audioPath);
 }
 
 void Game::updateCharacter() {
@@ -219,6 +221,9 @@ void Game::checkConflit() {
 			character->y + widthChar/2 > enemies[i]->y - widthEnemie/2 && 
 			character->y - widthChar/2 < enemies[i]->y + widthEnemie/2
 		) {
+			const char* audioPath = ("audios/" + std::to_string(enemies[i]->id) + ".mp3").c_str();
+			audio->play_audio(audioPath);
+
 			gameOver = true;
 			started = false;
 			readyToStart = !leftPressed && !rightPressed && !upPressed && !downPressed;

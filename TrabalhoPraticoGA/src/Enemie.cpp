@@ -2,12 +2,13 @@
 
 #include "Enemie.h"
 
-Enemie::Enemie(Sprite* i_sprite, float i_x, float i_y, float i_speedX, float i_speedY) {
+Enemie::Enemie(Sprite* i_sprite, float i_x, float i_y, float i_speedX, float i_speedY, int i_id) {
   this->sprite = i_sprite;
   this->x = i_x;
   this->y = i_y;
 	this->speedX = i_speedX;
 	this->speedY = i_speedY;
+	this->id = i_id;
 }
 
 void Enemie::setSprite(Sprite* i_sprite) {
