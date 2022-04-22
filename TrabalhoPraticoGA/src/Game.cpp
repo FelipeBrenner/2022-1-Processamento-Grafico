@@ -125,8 +125,12 @@ void Game::createScene() {
 
 void Game::createBackground()
 {
-	Sprite *sprite = new Sprite;
-	unsigned int texID = loadTexture("textures/background.png");
+	Sprite *sprite;
+	unsigned int texID;
+	Character* background;
+	
+	sprite = new Sprite;
+	texID = loadTexture("textures/background.png");
 
 	sprite->setTexture(texID);
 	sprite->setTranslation(glm::vec3(width/2, height/2, 0.0));
@@ -135,6 +139,19 @@ void Game::createBackground()
 	objects.push_back(sprite);
 
 	background = new Character(sprite, width/2, height/2, 0.02f);
+	backgrounds.push_back(background);
+
+	sprite = new Sprite;
+	texID = loadTexture("textures/background2.png");
+
+	sprite->setTexture(texID);
+	sprite->setTranslation(glm::vec3(width/2, height/2, 0.0));
+	sprite->setScale(glm::vec3(width/3, height/2, 1.0f));
+	sprite->setShader(shader);
+	objects.push_back(sprite);
+
+	background = new Character(sprite, width/2, height/2, 0.04f);
+	backgrounds.push_back(background);
 }
 
 void Game::createCharacter() {
@@ -179,25 +196,33 @@ void Game::updateCharacter() {
   if(leftPressed)
     if(character->x > widthChar/2) {
 			character->moveLeft();
-			background->moveRight();
+			for (int i = 0; i < backgrounds.size(); i++) {
+				backgrounds[i]->moveRight();
+			}
 		}
 
 	if(rightPressed)
     if(character->x < widthDefault - widthChar/2) {
 			character->moveRight();
-			background->moveLeft();
+			for (int i = 0; i < backgrounds.size(); i++) {
+				backgrounds[i]->moveLeft();
+			}
 		}
 
 	if(upPressed)
     if(character->y < heightDefault - widthChar/2) {
 			character->moveUp();
-			background->moveDown();
+			for (int i = 0; i < backgrounds.size(); i++) {
+				backgrounds[i]->moveDown();
+			}
 		}
 
 	if(downPressed)
     if(character->y > widthChar/2) {
 			character->moveDown();
-			background->moveUp();
+			for (int i = 0; i < backgrounds.size(); i++) {
+				backgrounds[i]->moveUp();
+			}
 		}
 };
 

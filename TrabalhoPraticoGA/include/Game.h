@@ -49,6 +49,6 @@ class Game {
 
     vector <Sprite*> objects;
     Character* character;
-    Character* background;
+    vector <Character*> backgrounds;
     vector <Enemie*> enemies;
 };
