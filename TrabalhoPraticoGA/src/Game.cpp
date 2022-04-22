@@ -13,6 +13,7 @@ Game::~Game() {}
 void Game::start() {
   initializeGraphics();
 	audio->init();
+	audio->play_audio("audios/pa-love-yourself.mp3");
 }
 
 void Game::initializeGraphics()
