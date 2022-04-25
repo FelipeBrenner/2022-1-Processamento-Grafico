@@ -173,7 +173,7 @@ void Game::createEnemie(int id) {
 	Sprite* sprite;
 	int texID;
 
-	float xInitial = widthChar/2;
+	float xInitial = widthEnemie/2;
 	float yInitial = rand() % (int)height - widthChar/2;
 
 	sprite = new Sprite;
