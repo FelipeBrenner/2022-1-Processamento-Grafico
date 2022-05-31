@@ -10,7 +10,7 @@ Repositório criado para o desenvolvimento e entrega das atividades da cadeira d
 
 ## ⚙ Execução
 
-Para as 3 primeiras listas a execução é a seguinte abaixo (meu SO é Linux):
+Para as listas em OpenGL, a execução é a seguinte abaixo (meu SO é Linux):
 
 ```bash
 # na pasta src do respectivo exercício, gerar o executável
@@ -19,11 +19,11 @@ g++ Source.cpp ../../../commonfiles/glad.c -ldl -lglfw
 ./a.out
 ```
 
-Para o resto já foi implementado um Makefile:
+Para os projetos em OpenCV, tendo ele instalado corretamente na sua máquina, a execução é a seguinte abaixo (meu SO é Linux):
 
 ```bash
-# na pasta do respectivo projeto
-make
-# executar o arquivo gerado
+# gerar o executável
+g++ -std=c++14 arquivo-a-executar.cpp `pkg-config --libs --cflags opencv4` -o app
+# e o executar
 ./app
 ```
