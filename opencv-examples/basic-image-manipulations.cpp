@@ -43,14 +43,14 @@ int main()
     imgCrop = imgOriginal(areaCrop);
 
     imshow("Imagem Original", imgScale);
-    // imshow("Imagem Grayscale", imgCinza);
-    // imshow("Imagem Borrada", imgBlur);
-    // imshow("Imagem Borda Grayscale", imgCanny);
-    // imshow("Imagem Borda Borrada", imgBlurCanny);
-    // imshow("Sobel Result", grad);
-    // imshow("Imagem Equalizada", imgEqual);
-    // imshow("Imagem Dilatada", imgDilate);
-    // imshow("Imagem Erodida", imgErode);
+    imshow("Imagem Grayscale", imgCinza);
+    imshow("Imagem Borrada", imgBlur);
+    imshow("Imagem Borda Grayscale", imgCanny);
+    imshow("Imagem Borda Borrada", imgBlurCanny);
+    imshow("Sobel Result", grad);
+    imshow("Imagem Equalizada", imgEqual);
+    imshow("Imagem Dilatada", imgDilate);
+    imshow("Imagem Erodida", imgErode);
     imshow("Imagem Cortada", imgCrop);
 
     waitKey(0);
