@@ -20,6 +20,12 @@ stickerIndex = 0
 stickers = [
   None, # the background class has no sticker
   cv2.imread("../stickers/sticker1.png", cv2.IMREAD_UNCHANGED),
+  cv2.imread("../stickers/sticker2.png", cv2.IMREAD_UNCHANGED),
+]
+stickersScalePercent = [
+  0,
+  30,
+  15
 ]
 
 def handleBlur(*args):
@@ -52,6 +58,14 @@ cv2.createButton('Canny', handleCanny, None, cv2.QT_PUSH_BUTTON, 1)
 cv2.createButton('Equalize', handleEqualize, None, cv2.QT_PUSH_BUTTON, 1)
 cv2.createButton('Dilate', handleDilate, None, cv2.QT_PUSH_BUTTON, 1)
 cv2.createButton('Erode', handleErode, None, cv2.QT_PUSH_BUTTON, 1)
+
+def handleStickerIndex(*args):
+  global stickerIndex
+  stickerIndex = args[1]
+
+cv2.createButton('Nenhum Sticker', handleStickerIndex, 0, cv2.QT_RADIOBOX, 1)
+cv2.createButton('Sticker 1', handleStickerIndex, 1, cv2.QT_RADIOBOX, 0)
+cv2.createButton('Sticker 2', handleStickerIndex, 2, cv2.QT_RADIOBOX, 0)
 
 def stickerTransparent(background, sticker, x_offset=None, y_offset=None):
   bg_h, bg_w, bg_channels = background.shape
@@ -103,12 +117,11 @@ cv2.setMouseCallback('Instagram', mouseCallback)
 while True:
   ret, img = cap.read()
 
-  if(globalX is not None and globalY is not None):
-    sticker = stickers[1]
+  if(stickerIndex != 0 and globalX is not None and globalY is not None):
+    sticker = stickers[stickerIndex]
 
-    scale_percent = 30 # percent of original size
-    width = int(sticker.shape[1] * scale_percent / 100)
-    height = int(sticker.shape[0] * scale_percent / 100)
+    width = int(sticker.shape[1] * stickersScalePercent[stickerIndex] / 100)
+    height = int(sticker.shape[0] * stickersScalePercent[stickerIndex] / 100)
     dim = (width, height)
       
     # resize image
