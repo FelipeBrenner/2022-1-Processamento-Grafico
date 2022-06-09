@@ -9,19 +9,25 @@ stickerIndex = 0 # índice do sticker selecionado nas radio box
 stickersImages = [
   None,
   cv2.imread("../stickers/nadaverirmao.png", cv2.IMREAD_UNCHANGED),
-  cv2.imread("../stickers/crying.png", cv2.IMREAD_UNCHANGED),
   cv2.imread("../stickers/mopaz.png", cv2.IMREAD_UNCHANGED),
   cv2.imread("../stickers/loadingcat.png", cv2.IMREAD_UNCHANGED),
   cv2.imread("../stickers/??.png", cv2.IMREAD_UNCHANGED),
+  cv2.imread("../stickers/azideia.png", cv2.IMREAD_UNCHANGED),
+  cv2.imread("../stickers/coreana.png", cv2.IMREAD_UNCHANGED),
+  cv2.imread("../stickers/pigmeu.png", cv2.IMREAD_UNCHANGED),
+  cv2.imread("../stickers/queloucura.png", cv2.IMREAD_UNCHANGED),
 ]
 
 # escala de cada respectiva imagem dos sticker, pois cada uma foi salva com um tamanho diferente
 stickersScalePercent = [
   0,
   25,
-  10,
   15,
   15,
+  20,
+  20,
+  20,
+  20,
   20,
 ]
 

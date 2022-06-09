@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from Filter import *
+from WitchFaceFilter import witchFunction
 
 # funções dos efeitos de cada filtro
 
@@ -28,7 +29,7 @@ def erodeFunction(img):
   return cv2.erode(img, kernel)
 
 def brightnessFunction(img):
-  return cv2.convertScaleAbs(img, beta=-60)
+  return cv2.convertScaleAbs(img, beta=60)
 
 def sharpFunction(img):
   kernel = np.array([[-1, -1, -1], [-1, 9.5, -1], [-1, -1, -1]])
@@ -89,6 +90,7 @@ filters = {
   'invert': Filter(invertFunction),
   'summer': Filter(summerFunction),
   'winter': Filter(winterFunction),
+  'witch': Filter(witchFunction),
 }
 
 # função para ativar/desativar os filtros nos botões

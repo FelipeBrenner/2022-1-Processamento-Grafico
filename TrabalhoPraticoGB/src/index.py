@@ -23,14 +23,18 @@ cv2.createButton('HDR', handleFilter, 'hdr', cv2.QT_PUSH_BUTTON, 1)
 cv2.createButton('Invert', handleFilter, 'invert', cv2.QT_PUSH_BUTTON, 1)
 cv2.createButton('Summer', handleFilter, 'summer', cv2.QT_PUSH_BUTTON, 1)
 cv2.createButton('Winter', handleFilter, 'winter', cv2.QT_PUSH_BUTTON, 1)
+cv2.createButton('Witch', handleFilter, 'witch', cv2.QT_PUSH_BUTTON, 1)
 
 # cria a seleção dos stickers
-cv2.createButton('Nenhum Sticker', handleStickerIndex, 0, cv2.QT_RADIOBOX, 1)
+cv2.createButton('Nenhum', handleStickerIndex, 0, cv2.QT_RADIOBOX, 1)
 cv2.createButton('Nada ver irmão', handleStickerIndex, 1, cv2.QT_RADIOBOX, 0)
-cv2.createButton('Crying', handleStickerIndex, 2, cv2.QT_RADIOBOX, 0)
-cv2.createButton('Mó paz', handleStickerIndex, 3, cv2.QT_RADIOBOX, 0)
-cv2.createButton('Loading cat', handleStickerIndex, 4, cv2.QT_RADIOBOX, 0)
-cv2.createButton('??', handleStickerIndex, 5, cv2.QT_RADIOBOX, 0)
+cv2.createButton('Mó paz', handleStickerIndex, 2, cv2.QT_RADIOBOX, 0)
+cv2.createButton('Loading cat', handleStickerIndex, 3, cv2.QT_RADIOBOX, 0)
+cv2.createButton('??', handleStickerIndex, 4, cv2.QT_RADIOBOX, 0)
+cv2.createButton('Azideia', handleStickerIndex, 5, cv2.QT_RADIOBOX, 0)
+cv2.createButton('Coreana', handleStickerIndex, 6, cv2.QT_RADIOBOX, 0)
+cv2.createButton('Pigmeu', handleStickerIndex, 7, cv2.QT_RADIOBOX, 0)
+cv2.createButton('Que loucura', handleStickerIndex, 8, cv2.QT_RADIOBOX, 0)
 
 # seta a função de leitura do click do mouse para posicionar o sticker selecionado
 cv2.setMouseCallback('Instagram', mouseCallback)
