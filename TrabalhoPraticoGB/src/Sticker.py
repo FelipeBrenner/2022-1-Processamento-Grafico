@@ -6,7 +6,7 @@ class Sticker:
     self.y = y
     self.scale = scale
     
-    # resize image
+    # redimensiona a imagem do sticker conforme a sua determinada escala
     width = int(image.shape[1] * scale / 100)
     height = int(image.shape[0] * scale / 100)
     dim = (width, height)
