@@ -7,6 +7,7 @@ Repositório criado para o desenvolvimento e entrega das atividades da cadeira d
 - [Introdução à OpenGL Moderna – Transformações em Objetos](https://github.com/FelipeBrenner/2022-1-Processamento-Grafico/tree/master/Lista3)
 
 - [Trabalho Prático GA](https://github.com/FelipeBrenner/2022-1-Processamento-Grafico/tree/master/TrabalhoPraticoGA)
+- [Trabalho Prático GB](https://github.com/FelipeBrenner/2022-1-Processamento-Grafico/tree/master/TrabalhoPraticoGB)
 
 ## ⚙ Execução
 
