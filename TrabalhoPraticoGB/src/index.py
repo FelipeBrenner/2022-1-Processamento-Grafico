@@ -1,10 +1,7 @@
 from re import I
 import cv2
 import numpy as np 
-
-cap = cv2.VideoCapture(1) # read video
-
-cv2.namedWindow('Instagram') # create a window
+from Sticker import *
 
 isActiveBlur = False
 isActiveGray = False
@@ -13,20 +10,28 @@ isActiveEqualize = False
 isActiveDilate = False
 isActiveErode = False
 
-globalX = None
-globalY = None
-
 stickerIndex = 0
-stickers = [
-  None, # the background class has no sticker
-  cv2.imread("../stickers/sticker1.png", cv2.IMREAD_UNCHANGED),
-  cv2.imread("../stickers/sticker2.png", cv2.IMREAD_UNCHANGED),
+stickersImages = [
+  None,
+  cv2.imread("../stickers/nadaverirmao.png", cv2.IMREAD_UNCHANGED),
+  cv2.imread("../stickers/crying.png", cv2.IMREAD_UNCHANGED),
+  cv2.imread("../stickers/mopaz.png", cv2.IMREAD_UNCHANGED),
+  cv2.imread("../stickers/loadingcat.png", cv2.IMREAD_UNCHANGED),
+  cv2.imread("../stickers/??.png", cv2.IMREAD_UNCHANGED),
 ]
 stickersScalePercent = [
   0,
-  30,
-  15
+  25,
+  10,
+  15,
+  15,
+  20,
 ]
+stickers = []
+
+cap = cv2.VideoCapture(1) # read video
+
+cv2.namedWindow('Instagram') # create a window
 
 def handleBlur(*args):
   global isActiveBlur
@@ -64,8 +69,11 @@ def handleStickerIndex(*args):
   stickerIndex = args[1]
 
 cv2.createButton('Nenhum Sticker', handleStickerIndex, 0, cv2.QT_RADIOBOX, 1)
-cv2.createButton('Sticker 1', handleStickerIndex, 1, cv2.QT_RADIOBOX, 0)
-cv2.createButton('Sticker 2', handleStickerIndex, 2, cv2.QT_RADIOBOX, 0)
+cv2.createButton('Nada ver irmão', handleStickerIndex, 1, cv2.QT_RADIOBOX, 0)
+cv2.createButton('Crying', handleStickerIndex, 2, cv2.QT_RADIOBOX, 0)
+cv2.createButton('Mó paz', handleStickerIndex, 3, cv2.QT_RADIOBOX, 0)
+cv2.createButton('Loading cat', handleStickerIndex, 4, cv2.QT_RADIOBOX, 0)
+cv2.createButton('??', handleStickerIndex, 5, cv2.QT_RADIOBOX, 0)
 
 def stickerTransparent(background, sticker, x_offset=None, y_offset=None):
   bg_h, bg_w, bg_channels = background.shape
@@ -107,28 +115,20 @@ def stickerTransparent(background, sticker, x_offset=None, y_offset=None):
   return background
 
 def mouseCallback(event, x, y, flags, param):
-  global globalX, globalY
-  if event == cv2.EVENT_LBUTTONDOWN:
-    globalX = x
-    globalY = y
+  global stickerIndex, stickers
+  if event == cv2.EVENT_LBUTTONDOWN and stickerIndex != 0:
+    sticker = Sticker(x, y, cv2.cvtColor(stickersImages[stickerIndex], cv2.COLOR_BGR2BGRA), stickersScalePercent[stickerIndex])
+    stickers.append(sticker)
 
 cv2.setMouseCallback('Instagram', mouseCallback)
 
 while True:
   ret, img = cap.read()
 
-  if(stickerIndex != 0 and globalX is not None and globalY is not None):
-    sticker = stickers[stickerIndex]
-
-    width = int(sticker.shape[1] * stickersScalePercent[stickerIndex] / 100)
-    height = int(sticker.shape[0] * stickersScalePercent[stickerIndex] / 100)
-    dim = (width, height)
+  if len(stickers) > 0:
+    for sticker in stickers:
+      img = stickerTransparent(img, sticker.image, int((sticker.x - sticker.image.shape[0]/2)), int((sticker.y - sticker.image.shape[1]/2)))
       
-    # resize image
-    sticker = cv2.resize(sticker, dim, interpolation = cv2.INTER_AREA)
-
-    img = stickerTransparent(img, sticker, int((globalX - sticker.shape[0]/2)), int((globalY - sticker.shape[1]/2)))
-
   if isActiveBlur:
     img = cv2.GaussianBlur(img, (13, 13), 5, 0)
   if isActiveGray:
