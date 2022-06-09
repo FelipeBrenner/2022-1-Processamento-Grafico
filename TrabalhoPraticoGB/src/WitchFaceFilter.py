@@ -1,6 +1,6 @@
 import cv2
 
-path = '../witchFaceFilter/'
+path = 'witchFaceFilter/'
 
 #get facial classifiers
 face_cascade = cv2.CascadeClassifier(path +'haarcascade_frontalface_default.xml')
